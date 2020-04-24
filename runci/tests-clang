@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+export CC=clang
+
+export ASAN_OPTIONS="abort_on_error=1:detect_stack_use_after_return=1"
+
+echo lots of warnings
+make CFLAGS="-Wall -pedantic -Weverything -Werror -fno-common -O2" clean test
+
+echo ASAN
+make CFLAGS="-fsanitize=address -U_FORTIFY_SOURCE -fno-common" clean test
+
+echo UBSAN
+make CFLAGS="-fsanitize=undefined -fno-sanitize-recover=all" clean test
+
+echo TSAN
+make CFLAGS="-fsanitize=thread" clean test
+
+echo MSAN
+make CFLAGS="-fsanitize=memory -fno-common -U_FORTIFY_SOURCE" clean test
+
+echo CFI
+make CFLAGS="-fsanitize=cfi,safe-stack -flto -fvisibility=hidden" clean test
+
+echo clang-format / codingstyle
+clang-format pwsec.c -n -Werror

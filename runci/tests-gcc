@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+export CC=gcc
+
+export ASAN_OPTIONS="abort_on_error=1:detect_stack_use_after_return=1"
+export LSAN_OPTIONS="exitcode=255"
+
+echo lots of warnings
+make CFLAGS="-Wall -pedantic -Werror -fno-common -O2" clean test
+
+echo ASAN
+make CFLAGS="-fsanitize=address -U_FORTIFY_SOURCE -fno-common" clean test
+
+echo UBSAN
+make CFLAGS="-fsanitize=undefined -fno-sanitize-recover=all" clean test
+
+echo TSAN
+make CFLAGS="-fsanitize=thread" clean test
