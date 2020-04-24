@@ -8,7 +8,7 @@ export ASAN_OPTIONS="abort_on_error=1:detect_stack_use_after_return=1"
 export LSAN_OPTIONS="exitcode=255"
 
 echo lots of warnings
-make CFLAGS="-Wall -pedantic -Werror -fno-common -O2" clean test
+make CFLAGS="-Wall -pedantic -Wextra -Werror -fno-common -O2" clean test
 
 echo ASAN
 make CFLAGS="-fsanitize=address -U_FORTIFY_SOURCE -fno-common" clean test
