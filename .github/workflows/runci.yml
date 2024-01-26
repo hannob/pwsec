@@ -1,0 +1,19 @@
+---
+name: Run CI tests
+"on":
+  - push
+  - pull_request
+
+jobs:
+  runci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+      - name: Run CI
+        run: |
+          ./runci/tests-gcc
+          ./runci/tests-clang
